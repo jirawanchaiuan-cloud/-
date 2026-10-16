@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ห้องทดลองเสมือน: ระบบหายใจ ม.5</title>
+<style>
+:root{--navy:#16324f;--blue:#2c7be5;--teal:#22a699;--coral:#f47765;--pale:#eef6ff;--ink:#233247;--muted:#64748b}
+*{box-sizing:border-box} body{margin:0;background:#f3f7fb;color:var(--ink);font-family:Tahoma,"Noto Sans Thai",sans-serif;line-height:1.55}
+header{background:linear-gradient(120deg,#153b65,#2479a8);color:white;padding:28px 18px 24px}
+.wrap{max-width:1120px;margin:auto;padding:0 16px} header h1{margin:0 0 7px;font-size:clamp(1.5rem,3vw,2.25rem)} header p{margin:0;color:#e3f3ff}
+.tag{display:inline-block;background:#ffffff22;border:1px solid #ffffff55;border-radius:99px;padding:4px 11px;font-size:.85rem;margin-bottom:10px}
+main{padding:22px 0 38px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel{background:white;border:1px solid #e1eaf2;border-radius:18px;padding:20px;box-shadow:0 5px 18px #153b650c}
+h2{font-size:1.15rem;color:var(--navy);margin:0 0 14px}h3{font-size:1rem;margin:0 0 8px;color:var(--navy)}
+.controls{display:grid;gap:18px}.control{padding:13px;background:#f7fbff;border-radius:12px}.control-head{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:bold}.value{color:#1769aa;background:#e1efff;padding:3px 9px;border-radius:8px;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--blue);margin:12px 0 4px}.scale{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+.note{font-size:.9rem;color:var(--muted);margin:9px 0 0}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.metric{background:#f1f8ff;border-radius:12px;padding:12px 9px;text-align:center}.metric strong{display:block;font-size:1.25rem;color:#1769aa}.metric span{font-size:.78rem;color:var(--muted)}
+.visual{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center}.lung-wrap{background:linear-gradient(#f2faff,#fff);border-radius:14px;min-height:235px;display:grid;place-items:center;overflow:hidden}
+svg{max-width:100%;height:auto}.lung{transform-box:fill-box;transform-origin:center;animation:breathe var(--breath-duration,4s) ease-in-out infinite alternate}
+@keyframes breathe{from{transform:scale(.88)}to{transform:scale(1.08)}}
+.pause .lung{animation-play-state:paused}
+.legend{font-size:.83rem;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+canvas{width:100%;height:210px;display:block;background:#fbfdff;border:1px solid #edf2f7;border-radius:12px}
+.full{grid-column:1/-1}.insight{border-left:4px solid var(--teal);padding:12px 14px;background:#effbf8;border-radius:8px;margin-top:12px}.insight strong{color:#13786e}
+button{border:0;border-radius:10px;padding:10px 15px;background:var(--blue);color:white;font-weight:bold;cursor:pointer}button.secondary{background:#e8f1fa;color:var(--navy)}button:hover{filter:brightness(.96)}
+.quiz-q{padding:14px 0;border-bottom:1px solid #edf1f5}.quiz-q:last-child{border:0}.quiz-q p{margin:0 0 8px;font-weight:bold}.quiz-q label{display:block;padding:5px 8px;border-radius:7px;cursor:pointer}.quiz-q label:hover{background:#f2f7fc}.quiz-q input{margin-right:7px}.feedback{font-size:.9rem;margin-top:6px}.correct{color:#11805e}.wrong{color:#bd4c40}.score{font-size:1.1rem;font-weight:bold;margin:12px 0}
+footer{text-align:center;color:var(--muted);font-size:.82rem;padding:0 15px 25px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.visual{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(3,1fr)}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><span class="tag">ชีววิทยา • มัธยมศึกษาปีที่ 5</span><h1>ห้องทดลองเสมือน: ระบบหายใจ</h1><p>ปรับอัตราการหายใจและปริมาตรลมหายใจเข้า–ออก แล้วสังเกตผลต่อการระบายอากาศของปอด</p></div></header>
+<main class="wrap">
+<div class="grid">
+<section class="panel">
+<h2>1. ปรับตัวแปรการหายใจ</h2>
+<div class="controls">
+<div class="control"><div class="control-head"><label for="rate">อัตราการหายใจ (ครั้ง/นาที)</label><span class="value" id="rateVal">12 ครั้ง/นาที</span></div><input id="rate" type="range" min="6" max="30" value="12" step="1"><div class="scale"><span>ช้า 6</span><span>เร็ว 30</span></div><p class="note">จำนวนรอบการหายใจใน 1 นาที</p></div>
+<div class="control"><div class="control-head"><label for="volume">ปริมาตรลมหายใจเข้า–ออก (mL/ครั้ง)</label><span class="value" id="volumeVal">500 mL</span></div><input id="volume" type="range" min="250" max="1000" value="500" step="50"><div class="scale"><span>ตื้น 250</span><span>ลึก 1,000</span></div><p class="note">ปริมาตรอากาศที่เข้าและออกต่อการหายใจหนึ่งครั้ง (ค่าจำลอง)</p></div>
+</div>
+<div class="metrics">
+<div class="metric"><strong id="minute">6.0 L</strong><span>ปริมาตรอากาศต่อนาที*</span></div>
+<div class="metric"><strong id="alveolar">4.2 L</strong><span>อากาศถึงถุงลมโดยประมาณ*</span></div>
+<div class="metric"><strong id="cycle">5.0 s</strong><span>เวลาต่อรอบ</span></div>
+</div>
+<p class="note">*คำนวณแบบจำลอง: ปริมาตรต่อนาที = อัตราการหายใจ × ปริมาตรต่อครั้ง; อากาศถึงถุงลมโดยประมาณ = อัตราการหายใจ × (ปริมาตรต่อครั้ง − 150 mL) โดยถือว่าปริมาตรอากาศในช่องนำอากาศประมาณ 150 mL/ครั้ง</p>
+</section>
+<section class="panel">
+<h2>2. ภาพจำลองการหายใจ</h2>
+<div class="visual">
+<div class="lung-wrap" id="lungArea">
+<svg viewBox="0 0 240 240" role="img" aria-label="ภาพจำลองปอดขณะหายใจ">
+<path d="M116 25 L116 84 Q116 96 104 102 M124 25 L124 84 Q124 96 136 102" fill="none" stroke="#e9a44d" stroke-width="10" stroke-linecap="round"/>
+<path d="M120 75 L120 107" stroke="#e9a44d" stroke-width="8" stroke-linecap="round"/>
+<g class="lung" id="leftLung"><path d="M108 91 C82 77 57 92 48 126 C39 158 45 193 70 202 C88 208 105 191 108 168 Z" fill="#f58b9b" stroke="#d65f78" stroke-width="2"/><path d="M101 113 L78 144 M92 129 L65 129 M88 145 L82 174" stroke="#d65f78" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+<g class="lung" id="rightLung"><path d="M132 91 C158 77 183 92 192 126 C201 158 195 193 170 202 C152 208 135 191 132 168 Z" fill="#f58b9b" stroke="#d65f78" stroke-width="2"/><path d="M139 113 L162 144 M148 129 L175 129 M152 145 L158 174" stroke="#d65f78" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+<path d="M35 207 Q120 226 205 207" fill="none" stroke="#2c7be5" stroke-width="4" stroke-linecap="round"/>
+<text x="120" y="232" text-anchor="middle" font-size="10" fill="#64748b">กะบังลม (ภาพจำลอง)</text>
+</svg>
+</div>
+<div><h3>สิ่งที่สังเกต</h3><p id="breathText">หายใจในอัตราปานกลาง ปอดขยายและหดตัวเป็นจังหวะ</p><p class="note">ภาพเคลื่อนไหวเป็นแบบจำลองเชิงแนวคิด ไม่ได้แสดงขนาดปอดจริง</p><button id="pauseBtn" class="secondary" type="button">หยุดภาพเคลื่อนไหว</button></div>
+</div>
+<div class="insight"><strong>คิดวิเคราะห์:</strong> เมื่ออัตราการหายใจหรือปริมาตรต่อครั้งเปลี่ยน ปริมาตรอากาศต่อนาทีเปลี่ยนอย่างไร? แล้วการหายใจเร็วแต่ตื้นอาจมีผลอย่างไรเมื่อเทียบกับการหายใจช้าแต่ลึก?</div>
+</section>
+<section class="panel full">
+<h2>3. กราฟเปรียบเทียบแบบ real-time</h2>
+<p class="note">กราฟแสดงผลจากค่าที่เลือกใน slider ทันที เปรียบเทียบปริมาตรอากาศต่อนาทีและอากาศที่ถึงถุงลมโดยประมาณ</p>
+<canvas id="chart" width="1000" height="300" aria-label="กราฟแท่งเปรียบเทียบปริมาตรอากาศ"></canvas>
+<div class="legend"><span><i class="dot" style="background:#2c7be5"></i>ปริมาตรอากาศต่อนาที</span><span><i class="dot" style="background:#22a699"></i>อากาศถึงถุงลมโดยประมาณ</span></div>
+</section>
+<section class="panel full">
+<h2>4. คำถามท้ายกิจกรรม (5 ข้อ)</h2>
+<p class="note">เลือกคำตอบให้ครบ แล้วกด “ตรวจคำตอบ” เพื่อดูคะแนนและเฉลย</p>
+<form id="quiz">
+<div class="quiz-q"><p>ข้อ 1. หากหายใจ 12 ครั้ง/นาที และมีปริมาตรลมหายใจ 500 mL/ครั้ง ปริมาตรอากาศต่อนาทีเท่ากับเท่าใด?</p>
+<label><input type="radio" name="q1" value="a">3 L/min</label><label><input type="radio" name="q1" value="b">6 L/min</label><label><input type="radio" name="q1" value="c">12 L/min</label><div class="feedback" id="f1"></div></div>
+<div class="quiz-q"><p>ข้อ 2. ถ้าปริมาตรลมหายใจต่อครั้งเท่ากับ 500 mL และช่องนำอากาศประมาณ 150 mL อากาศที่ถึงถุงลมต่อครั้งประมาณเท่าใด?</p>
+<label><input type="radio" name="q2" value="a">150 mL</label><label><input type="radio" name="q2" value="b">350 mL</label><label><input type="radio" name="q2" value="c">650 mL</label><div class="feedback" id="f2"></div></div>
+<div class="quiz-q"><p>ข้อ 3. เมื่อเพิ่มอัตราการหายใจ โดยคงปริมาตรลมหายใจต่อครั้งไว้เท่าเดิม ปริมาตรอากาศต่อนาทีจะเป็นอย่างไร?</p>
+<label><input type="radio" name="q3" value="a">เพิ่มขึ้น</label><label><input type="radio" name="q3" value="b">ลดลงเสมอ</label><label><input type="radio" name="q3" value="c">ไม่เปลี่ยนแปลง</label><div class="feedback" id="f3"></div></div>
+<div class="quiz-q"><p>ข้อ 4. เพราะเหตุใดการหายใจเร็วและตื้นจึงอาจระบายอากาศถึงถุงลมได้ไม่ดีเท่าที่คาด?</p>
+<label><input type="radio" name="q4" value="a">อากาศทั้งหมดจะหยุดอยู่ในหลอดลม</label><label><input type="radio" name="q4" value="b">อากาศส่วนหนึ่งใช้เติมช่องนำอากาศในแต่ละรอบ จึงเหลือถึงถุงลมน้อย</label><label><input type="radio" name="q4" value="c">ถุงลมไม่เกี่ยวข้องกับการแลกเปลี่ยนแก๊ส</label><div class="feedback" id="f4"></div></div>
+<div class="quiz-q"><p>ข้อ 5. จุดประสงค์สำคัญของถุงลมปอดคือข้อใด?</p>
+<label><input type="radio" name="q5" value="a">สร้างเม็ดเลือดแดง</label><label><input type="radio" name="q5" value="b">กรองอาหารก่อนเข้าสู่กระเพาะ</label><label><input type="radio" name="q5" value="c">แลกเปลี่ยนแก๊สออกซิเจนและคาร์บอนไดออกไซด์ระหว่างอากาศกับเลือด</label><div class="feedback" id="f5"></div></div>
+<div class="score" id="score" aria-live="polite"></div><button type="submit">ตรวจคำตอบ</button> <button type="button" class="secondary" id="resetQuiz">ทำใหม่</button>
+</form>
+</section>
+</div>
+</main>
+<footer>สื่อการเรียนรู้จำลองเพื่อใช้ประกอบการเรียน ไม่ใช่เครื่องมือวินิจฉัยสุขภาพ</footer>
+<script>
+const rate=document.getElementById('rate'), volume=document.getElementById('volume');
+const fmt=n=>n.toLocaleString('th-TH',{maximumFractionDigits:2});
+function update(){
+ const r=+rate.value,v=+volume.value, minute=r*v/1000, alveolar=r*Math.max(0,v-150)/1000, cycle=60/r;
+ document.getElementById('rateVal').textContent=r+' ครั้ง/นาที';
+ document.getElementById('volumeVal').textContent=v+' mL';
+ document.getElementById('minute').textContent=fmt(minute)+' L';
+ document.getElementById('alveolar').textContent=fmt(alveolar)+' L';
+ document.getElementById('cycle').textContent=fmt(cycle)+' s';
+ document.documentElement.style.setProperty('--breath-duration',Math.max(1.2,cycle)+'s');
+ const msg = r>=22 && v<450 ? 'หายใจเร็วและตื้น: แม้จำนวนรอบมาก แต่อากาศที่ถึงถุงลมต่อครั้งมีสัดส่วนลดลง' : r>=22 ? 'หายใจเร็ว: ปริมาตรอากาศต่อนาทีเพิ่มขึ้นได้ แต่การแลกเปลี่ยนแก๊สจริงยังขึ้นกับหลายปัจจัย' : v>=750 ? 'หายใจค่อนข้างลึก: อากาศต่อครั้งมากขึ้นในแบบจำลอง' : r<=9 ? 'หายใจช้า: แต่ละรอบใช้เวลานานขึ้น' : 'หายใจในอัตราปานกลาง ปอดขยายและหดตัวเป็นจังหวะ';
+ document.getElementById('breathText').textContent=msg;
+ drawChart(minute,alveolar);
+}
+function drawChart(a,b){
+ const c=document.getElementById('chart'),ctx=c.getContext('2d'),w=c.width,h=c.height;
+ ctx.clearRect(0,0,w,h);const max=Math.max(8,a,b)*1.15,base=h-48,top=25,usable=base-top;
+ ctx.strokeStyle='#e4ebf2';ctx.lineWidth=1;ctx.fillStyle='#64748b';ctx.font='16px Tahoma';
+ for(let i=0;i<=4;i++){let y=base-usable*i/4;ctx.beginPath();ctx.moveTo(65,y);ctx.lineTo(w-25,y);ctx.stroke();ctx.fillText((max*i/4).toFixed(1),12,y+5);}
+ const bars=[{x:w*.32,val:a,color:'#2c7be5',label:'อากาศต่อนาที'},{x:w*.65,val:b,color:'#22a699',label:'ถึงถุงลมโดยประมาณ'}];
+ bars.forEach(o=>{let bh=o.val/max*usable;ctx.fillStyle=o.color;ctx.fillRect(o.x-55,base-bh,110,bh);ctx.fillStyle='#233247';ctx.font='bold 17px Tahoma';ctx.textAlign='center';ctx.fillText(o.val.toFixed(2)+' L',o.x,base-bh-10);ctx.font='15px Tahoma';ctx.fillText(o.label,o.x,base+26);});ctx.textAlign='left';
+}
+rate.addEventListener('input',update);volume.addEventListener('input',update);
+let paused=false;document.getElementById('pauseBtn').addEventListener('click',()=>{paused=!paused;document.getElementById('lungArea').classList.toggle('pause',paused);document.getElementById('pauseBtn').textContent=paused?'เล่นภาพเคลื่อนไหว':'หยุดภาพเคลื่อนไหว';});
+const answers={q1:{a:'b',why:'12 × 500 = 6,000 mL หรือ 6 L ต่อนาที'},q2:{a:'b',why:'500 − 150 = 350 mL ต่อครั้ง โดยประมาณ'},q3:{a:'a',why:'เมื่อปริมาตรต่อครั้งคงที่ การเพิ่มจำนวนครั้งทำให้ปริมาตรต่อนาทีเพิ่มขึ้น'},q4:{a:'b',why:'ช่องนำอากาศมีปริมาตรส่วนหนึ่งที่ไม่ได้แลกเปลี่ยนแก๊สโดยตรงในถุงลม จึงต้องพิจารณาอากาศส่วนนี้ด้วย'},q5:{a:'c',why:'ถุงลมมีผนังบางและมีเส้นเลือดฝอยล้อมรอบ ช่วยให้ O₂ และ CO₂ แพร่แลกเปลี่ยนกันได้'}};
+document.getElementById('quiz').addEventListener('submit',e=>{e.preventDefault();let score=0;Object.keys(answers).forEach((q,i)=>{let chosen=document.querySelector('input[name="'+q+'"]:checked'),f=document.getElementById('f'+(i+1)),ok=chosen&&chosen.value===answers[q].a;if(ok)score++;f.className='feedback '+(ok?'correct':'wrong');f.textContent=(ok?'ถูกต้อง ✓ ':'ยังไม่ถูก ✗ ')+answers[q].why;});document.getElementById('score').textContent='คะแนนของคุณ: '+score+'/5 คะแนน';});
+document.getElementById('resetQuiz').addEventListener('click',()=>{document.getElementById('quiz').reset();for(let i=1;i<=5;i++){let f=document.getElementById('f'+i);f.textContent='';f.className='feedback';}document.getElementById('score').textContent='';});
+update();
+</script>
+</body>
+</html>
